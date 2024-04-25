@@ -81,7 +81,7 @@ pauli_z = np.array([[1, 0],
 
 
 def main(
-    n:int = 2,  # linear size of lattice
+    n:int = 1,  # linear size of lattice
     lattice:str = "kagome" #"square"/"kagome"
 ):
     np.random.seed(216)
@@ -101,7 +101,7 @@ def main(
     j_ij = [1.] * structure_matrix.shape[1]
 
     # maximal bond dimension
-    d_max_ = [2, 3, 4, 5]
+    d_max_ = [2]
 
     # convergence error between consecutive lambda weights vectors
     error = 1e-5
@@ -153,6 +153,10 @@ def main(
         # save the tensor network
         AFH_TN.save_network()
 
+
+        import pickle
+        with open("temp" + '.pkl', 'wb') as outfile:
+            pickle.dump(AFH_TN.tensors, outfile, pickle.DEFAULT_PROTOCOL)
 
     """ 
     ### Plot the Results

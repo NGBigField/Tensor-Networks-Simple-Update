@@ -51,10 +51,20 @@ def infinite_structure_matrix_dict(name: str):
                         #                     [3,	2,	0,	1,	4,	0],
                         #                     [0,	4,	3,	0,	2,	1]]),
 
-                        'kagome': np.array([[4,	0,	1,	2,	0,	3],
-                                            [3,	2,	0,	1,	4,	0],
-                                            [0,	4,	3,	0,	2,	1]]),
-                                            
+                        'kagome': np.array([
+                            [2, 3, 4, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # T1
+                            [0, 0, 0, 0, 2, 3, 4, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # T2
+                            [0, 0, 0, 0, 2, 0, 0, 0, 3, 4, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # T3
+                            [2, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 4, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # T4
+                            [0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 4, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # T5
+                            [0, 0, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0],  # T6
+                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3, 0, 0, 0, 4, 5, 0, 0, 0, 0, 0, 0],  # T7
+                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 0, 0, 4, 5, 0, 0, 0, 0],  # T8
+                            [0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 4, 5, 0, 0],  # T9
+                            [0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 4, 0, 5, 0],  # T10
+                            [0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 4, 5],  # T11
+                            [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 4, 0, 5]   # T12
+                        ]) #E1 E2 E3 E4 E5 E6 E7 E8 E9 E10 E11 E12 E13 E14 E15 E16 E17 E18 E19 E20 E21 E22 E23 E24
 
                         }
     
@@ -62,9 +72,12 @@ def infinite_structure_matrix_dict(name: str):
 
 def kagome_peps_pbc(side: int)->np.ndarray:
     if side==1:
-        return infinite_structure_matrix_dict("kagome")
+        sm = infinite_structure_matrix_dict("kagome")
+        sm = _decrease_non_zero_elements(sm, by=1)
     else: 
         sm = kagome_structure_matrix(side)
+
+    return sm
 
 
 def square_peps_pbc(side: int):
@@ -126,3 +139,12 @@ def rectangular_peps_obc(height: int, width: int):
         structure_matrix[i, np.nonzero(structure_matrix[i, :])[0]] = new_row
     return structure_matrix
 
+
+
+def _decrease_non_zero_elements(m:np.ndarray, by:int)->np.ndarray:
+    with np.nditer(m, op_flags=['readwrite']) as it:
+        for x in it:
+            if x==0:
+                continue
+            x[...] = x - by
+    return m
