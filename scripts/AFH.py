@@ -155,7 +155,8 @@ def main(
 
 
         import pickle
-        with open("temp" + '.pkl', 'wb') as outfile:
+        filename = f"tnsu_AFH_D={d_max}.dat"
+        with open(filename, 'wb') as outfile:
             pickle.dump(AFH_TN.tensors, outfile, pickle.DEFAULT_PROTOCOL)
 
     """ 
