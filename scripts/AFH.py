@@ -55,8 +55,8 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 scripts : Path = Path(__file__).parent
-main : Path = scripts.parent
-src : Path = main/"src"
+project_root : Path = scripts.parent
+src : Path = project_root/"src"
 tnsu : Path = src/"tnsu"
 
 sys.path.append(src.__str__())
@@ -67,36 +67,41 @@ from tnsu import structure_matrix_constructor as smc
 
 
 
+# Pauli matrices
+pauli_x = np.array([[0, 1],
+                    [1, 0]])
+pauli_y = np.array([[0, -1j],
+                    [1j, 0]])
+pauli_z = np.array([[1, 0],
+                    [0, -1]])
 
 """
 ### Finding the ground state with Tensor Network Simple Update
 """
 
 
-def main():
+def main(
+    n:int = 2,  # linear size of lattice
+    lattice:str = "kagome" #"square"/"kagome"
+):
     np.random.seed(216)
 
-    # Pauli matrices
-    pauli_x = np.array([[0, 1],
-                        [1, 0]])
-    pauli_y = np.array([[0, -1j],
-                        [1j, 0]])
-    pauli_z = np.array([[1, 0],
-                        [0, -1]])
     s_i = [pauli_x / 2., pauli_y / 2., pauli_z / 2.]
     s_j = [pauli_x / 2., pauli_y / 2., pauli_z / 2.]
     s_k = [pauli_x / 2.]
 
     # The Tensor Network structure matrix
-    n = 2
-    structure_matrix = smc.square_peps_pbc(n)
+    match lattice:
+        case "square":  structure_matrix = smc.square_peps_pbc(n)
+        case "kagome":  structure_matrix = smc.kagome_peps_pbc(n)
+
     print(f'There are {structure_matrix.shape[1]} edges, and {structure_matrix.shape[0]} tensors')
 
     # AFH Hamiltonian interaction parameters
     j_ij = [1.] * structure_matrix.shape[1]
 
     # maximal bond dimension
-    d_max_ = [2]
+    d_max_ = [2, 3, 4, 5]
 
     # convergence error between consecutive lambda weights vectors
     error = 1e-5

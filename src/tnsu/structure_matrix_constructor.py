@@ -3,6 +3,7 @@ import numpy as np
 """
 A File for Structure Matrices constructions. 
 """
+from kagome import kagome_structure_matrix  
 
 
 def infinite_structure_matrix_dict(name: str):
@@ -45,8 +46,25 @@ def infinite_structure_matrix_dict(name: str):
                                               [0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 4, 0, 5, 6, 0],
                                               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 2, 0, 0, 0, 0, 3, 0, 4, 0, 0, 0, 5, 0, 6],
                                               [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 3, 0, 4, 0, 5, 6]]),
+                        
+                        # 'kagome': np.array([[4,	0,	1,	2,	0,	3],
+                        #                     [3,	2,	0,	1,	4,	0],
+                        #                     [0,	4,	3,	0,	2,	1]]),
+
+                        'kagome': np.array([[4,	0,	1,	2,	0,	3],
+                                            [3,	2,	0,	1,	4,	0],
+                                            [0,	4,	3,	0,	2,	1]]),
+                                            
+
                         }
+    
     return structure_matrix[name]
+
+def kagome_peps_pbc(side: int)->np.ndarray:
+    if side==1:
+        return infinite_structure_matrix_dict("kagome")
+    else: 
+        sm = kagome_structure_matrix(side)
 
 
 def square_peps_pbc(side: int):
